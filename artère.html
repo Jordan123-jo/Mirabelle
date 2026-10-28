@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101014">
+<title>Un message pour toi ❤️</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 18px;
+    color: #f7f3eb;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(
+        circle at top,
+        #302330,
+        #121116 50%,
+        #09090c
+    );
+}
+
+/* Petites étoiles animées */
+.sparkle {
+    position: fixed;
+    color: #d9b76a;
+    opacity: 0.6;
+    pointer-events: none;
+    animation: flotter 4s ease-in-out infinite;
+}
+
+.s1 { top: 12%; left: 12%; }
+.s2 { top: 23%; right: 13%; animation-delay: 1s; }
+.s3 { bottom: 16%; left: 18%; animation-delay: 2s; }
+.s4 { bottom: 22%; right: 12%; animation-delay: .5s; }
+
+@keyframes flotter {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: .3;
+    }
+    50% {
+        transform: translateY(-12px);
+        opacity: .9;
+    }
+}
+
+/* Carte principale */
+.card {
+    width: 100%;
+    max-width: 560px;
+    padding: 24px 20px;
+    border: 1px solid #d9b76a66;
+    border-radius: 22px;
+    background: rgba(19, 18, 23, 0.95);
+    box-shadow: 0 18px 60px #0008;
+    position: relative;
+    z-index: 1;
+}
+
+.topline {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 22px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d9b76a;
+}
+
+.label {
+    margin-left: auto;
+    color: #aaa4ad;
+    font-size: 12px;
+}
+
+.eyebrow {
+    color: #d9b76a;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+h1 {
+    text-align: center;
+    color: #f0d69b;
+    font-family: Georgia, serif;
+    font-weight: normal;
+    font-size: 28px;
+    margin: 0 0 24px;
+}
+
+/* Texte qui s'écrit */
+#message {
+    font-size: 16px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    min-height: 180px;
+}
+
+/* Curseur de clavier */
+.cursor {
+    display: inline-block;
+    width: 7px;
+    height: 18px;
+    background: #d9b76a;
+    vertical-align: middle;
+    margin-left: 3px;
+    animation: clignoter .8s steps(2, start) infinite;
+}
+
+@keyframes clignoter {
+    to { visibility: hidden; }
+}
+
+/* Barre de progression */
+.progress {
+    height: 3px;
+    background: #39333b;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 18px;
+}
+
+#bar {
+    height: 100%;
+    width: 0%;
+    background: #d9b76a;
+    transition: width .1s linear;
+}
+
+/* Boutons */
+.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 22px;
+    min-height: 45px;
+}
+
+button {
+    border: none;
+    border-radius: 30px;
+    padding: 13px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #f0d69b, #bd9144);
+    color: #19140b;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.small {
+    text-align: center;
+    color: #8e8992;
+    font-size: 11px;
+    margin-top: 18px;
+}
+
+@media (max-width: 380px) {
+    .card { padding: 20px 16px; }
+    #message { font-size: 15px; }
+    h1 { font-size: 25px; }
+}
+</style>
+</head>
+
+<body>
+
+<span class="sparkle s1">✦</span>
+<span class="sparkle s2">✧</span>
+<span class="sparkle s3">✦</span>
+<span class="sparkle s4">✧</span>
+
+<main class="card">
+
+    <div class="topline">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="label">quelqu'un t'écrit…</span>
+    </div>
+
+    <div class="eyebrow">Message confidentiel</div>
+
+    <h1>Apparemment…</h1>
+
+    <div id="message" aria-live="polite"></div>
+    <span id="cursor" class="cursor"></span>
+
+    <div class="progress">
+        <div id="bar"></div>
+    </div>
+
+    <div class="actions">
+        <button id="skipBtn" class="hidden">
+            Afficher tout le texte
+        </button>
+
+        <button id="replayBtn" class="hidden">
+            Relire le message ↻
+        </button>
+    </div>
+
+    <div class="small">
+        Prends ton temps pour lire ✨
+    </div>
+
+</main>
+
+<script>
+const paragraphs = [
+
+    "Aujourd'hui, nous sommes le 29 octobre et, sur le calendrier, c'est marqué Narcisse. Quand on y regarde de plus près, on comprend tout de suite que tu n'es pas allée chercher ton narcissisme bien loin. 😂",
+
+    "Ta naissance n'est pas un hasard. Et non, tu n'es pas née pour moi, pour devenir ma chose, mais plutôt comme une créature douée de sagesse, capable de faire craquer quelqu'un, pas seulement par sa beauté, mais aussi, et surtout, par son cœur.",
+
+    "Et puisque tu as bien voulu me le confier, je te promets de faire de mon mieux pour préserver son éclat. ❤️",
+
+    "Depuis que tu es entrée dans ma vie, tu as fait beaucoup de ménage… même si, bizarrement, j'aimais bien la poussière qui y siégeait. 😂",
+
+    "J'ai mis du temps à le réaliser. À réaliser ce que tu représentes pour moi : ma tête de mule au gros nez 🥱",
+
+    "Tu es née pour briller et pour distribuer au monde un peu de ta joie de vivre. Ne vis pas pour moi ni pour personne d'autre. ✨",
+
+    "Les longs métrages, ce n'est vraiment pas mon truc, mais bon… je tenais à ce que tu lises celui-ci.",
+
+    "Je t aime" ,
+    "toi ",
+    "tes lèvres",
+  "ton corps",
+  "tes courbures",
+  "tes nibbards",
+    "ton cul",
+  "J'aime tes folies et ton",
+  "nez particulierement ",
+  
+
+];
+
+const message = document.getElementById("message");
+const cursor = document.getElementById("cursor");
+const skipBtn = document.getElementById("skipBtn");
+const replayBtn = document.getElementById("replayBtn");
+const bar = document.getElementById("bar");
+
+let paragraphIndex = 0;
+let charIndex = 0;
+let timer = null;
+
+const fullText = paragraphs.join("\n\n");
+const totalChars = fullText.length;
+
+/* Écriture lettre par lettre */
+function typeNext() {
+
+    if (paragraphIndex >= paragraphs.length) {
+        cursor.classList.add("hidden");
+        skipBtn.classList.add("hidden");
+        replayBtn.classList.remove("hidden");
+        bar.style.width = "100%";
+        return;
+    }
+
+    const currentParagraph = paragraphs[paragraphIndex];
+
+    if (charIndex < currentParagraph.length) {
+
+        message.textContent += currentParagraph.charAt(charIndex);
+        charIndex++;
+
+        const progress =
+            (message.textContent.length / totalChars) * 100;
+
+        bar.style.width = Math.min(100, progress) + "%";
+
+        // Vitesse de frappe : 34 millisecondes par caractère
+        timer = setTimeout(typeNext, 34);
+
+    } else {
+
+        // Pause entre les paragraphes
+        message.textContent += "\n\n";
+
+        paragraphIndex++;
+        charIndex = 0;
+
+        timer = setTimeout(typeNext, 650);
+    }
+}
+
+/* Afficher immédiatement tout le texte */
+function showAll() {
+
+    clearTimeout(timer);
+
+    message.textContent = fullText;
+    bar.style.width = "100%";
+
+    cursor.classList.add("hidden");
+    skipBtn.classList.add("hidden");
+    replayBtn.classList.remove("hidden");
+}
+
+/* Recommencer depuis le début */
+function start() {
+
+    clearTimeout(timer);
+
+    paragraphIndex = 0;
+    charIndex = 0;
+
+    message.textContent = "";
+    bar.style.width = "0%";
+
+    cursor.classList.remove("hidden");
+    replayBtn.classList.add("hidden");
+    skipBtn.classList.remove("hidden");
+
+    typeNext();
+}
+
+skipBtn.addEventListener("click", showAll);
+replayBtn.addEventListener("click", start);
+
+// L'animation démarre dès l'ouverture de la page
+start();
+</script>
+
+</body>
+</html>
